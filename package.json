@@ -1,0 +1,19 @@
+{
+  "name": "scratch-project",
+  "version": "0.1.0",
+  "description": "John Hamlin's Solo Project for Codesmith",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnhamlin/scratch-project.git"
+  },
+  "author": "John Hamlin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnhamlin/scratch-project/issues"
+  },
+  "homepage": "https://github.com/johnhamlin/scratch-project#readme"
+}
