@@ -1,0 +1,24 @@
+{
+  "name": "solo-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\" ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnhamlin/scratch-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnhamlin/scratch-project/issues"
+  },
+  "homepage": "https://github.com/johnhamlin/scratch-project#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
