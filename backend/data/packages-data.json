@@ -1,0 +1,14 @@
+{
+  "list": [
+    {
+      "name": "express",
+      "github": "https://github.com/expressjs/express",
+      "version": "4.17.3"
+    },
+    {
+      "name": "react",
+      "github": "https://github.com/facebook/react.git",
+      "version": "18.1.0"
+    }
+  ]
+}
