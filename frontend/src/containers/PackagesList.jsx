@@ -1,44 +1,58 @@
 import Accordion from 'react-bootstrap/Accordion';
-import { useEffect } from 'react';
+import Container from 'react-bootstrap/Container';
+import ClipLoader from 'react-spinners/ClipLoader';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import { useEffect, useState } from 'react';
 
 function PackagesList(props) {
+  const [packagesList, setPackagesList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     fetch('/api')
       .then(data => data.json())
-      .then(data => console.log(data));
+      .then(({ list }) => {
+        console.log(list);
+        setPackagesList(list);
+        setLoading(false);
+      })
+      .catch(e => console.warn(e.message));
 
     return () => {
       // second;
     };
   }, []);
 
+  if (loading) {
+    return (
+      <Container className="column align-content-center text-center">
+        <ClipLoader size={60}></ClipLoader>
+      </Container>
+    );
+  }
+
+  const packagesListAccordionItems = packagesList.map(
+    buildAccordionItemFromPackage
+  );
+
   return (
-    <Accordion defaultActiveKey="0">
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>Accordion Item #1</Accordion.Header>
-        <Accordion.Body>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>Accordion Item #2</Accordion.Header>
-        <Accordion.Body>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
+    <Accordion defaultActiveKey="">{packagesListAccordionItems}</Accordion>
+  );
+}
+
+function buildAccordionItemFromPackage(currentPackage, index) {
+  return (
+    <Accordion.Item key={index} eventKey={index}>
+      <Accordion.Header>{`${currentPackage.name} @ ${currentPackage.version}`}</Accordion.Header>
+      <Accordion.Body>
+        {currentPackage.changes.changelog.map(current => (
+          <>
+            <h2>{current.version}</h2>
+            <ReactMarkdown>{current.body}</ReactMarkdown>
+          </>
+        ))}
+      </Accordion.Body>
+    </Accordion.Item>
   );
 }
 

@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   console.log('request received!');
-  res.send('Hello from the backed!');
+  res.send('Hello from the other siiiiiiiide!');
 });
 
 app.use('/api', apiRouter);

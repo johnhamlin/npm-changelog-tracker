@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 
 // Import Containers
 import PackageList from './containers/PackagesList.jsx';
+import AddPackageContainer from './containers/AddPackageContainer.jsx';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,8 +17,10 @@ function App() {
         <h1 className="display-1 text-center my-4">
           Package Changelog Tracker
         </h1>
-
-        <PackageList></PackageList>
+        <Container className="mb-5 row align-content-center">
+          <AddPackageContainer className="mb-5" />
+        </Container>
+        <PackageList />
       </Container>
     </Container>
   );

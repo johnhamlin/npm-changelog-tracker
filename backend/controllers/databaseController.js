@@ -23,4 +23,18 @@ databaseController.read = async (req, res, next) => {
   }
 };
 
+databaseController.addPackage = async (req, res, next) => {
+  try {
+    // pull package name and version off req.body
+    res.locals.package = req.body;
+    return next();
+  } catch (error) {
+    next({
+      log: `Express caught error in databaseControllers.addPackage. Err: ${error.message}`,
+      status: 500,
+      message: { err: 'An error occurred in databaseControllers.addPackage' },
+    });
+  }
+};
+
 module.exports = databaseController;

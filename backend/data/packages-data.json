@@ -3,12 +3,12 @@
     {
       "name": "express",
       "github": "https://github.com/expressjs/express",
-      "version": "4.17.3"
+      "version": "4.18.0"
     },
     {
       "name": "react",
       "github": "https://github.com/facebook/react.git",
-      "version": "18.1.0"
+      "version": "16.1.0"
     }
   ]
 }

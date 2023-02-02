@@ -3,7 +3,7 @@ const URL = 'https://registry.npmjs.org/';
 const githubRegex = /(git\+)|((https?:\/\/)?github.com\/)|(.git)$/g;
 const npmAPIController = {};
 
-npmAPIController.get = async (req, res, next) => {
+npmAPIController.getRepoOwnerAndName = async (req, res, next) => {
   try {
     const { list } = res.locals.packages;
     // console.log(list);
@@ -24,7 +24,7 @@ npmAPIController.get = async (req, res, next) => {
       return package.npm;
       // console.log(package);
     });
-    await Promise.allSettled(promises);
+    await Promise.all(promises);
 
     // console.log(list);
 
