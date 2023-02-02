@@ -1,7 +1,6 @@
+// require('dotenv').config();
 const mongoose = require('mongoose');
-const MONGO_URI = process.env.MONGO_URL;
-
-console.log(process.env);
+const MONGO_URI = process.env.MONGO_URI;
 
 console.log(MONGO_URI);
 
@@ -26,4 +25,6 @@ const packageSchema = new Schema({
   repoName: { type: String, required: true },
 });
 
-module.exports = { packageSchema };
+const Package = mongoose.model('package', packageSchema);
+
+module.exports = { Package };

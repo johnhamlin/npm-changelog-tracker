@@ -6,16 +6,30 @@ const URL = 'https://changelogs.md/api/github/';
 // slow because promises can't run concurrently, but it works!
 changelogAPIController.get = async (req, res, next) => {
   console.log('getting changelog');
-  const { list } = res.locals.packages;
+  const { list } = res.locals;
+  res.locals.newList = [];
 
   for (const package of list) {
-    const response = await axios.get(
-      `${URL}${package.repoOwner}/${package.repoName}`
-    );
-    package.changes = filterOldChanges(package.version, response.data.contents);
-    console.log(res);
+    const { name, version, repoOwner, repoName, github } = package;
 
-    package.changes.latestVersion = response.data.contents[0].version;
+    const response = await axios.get(
+      `${URL}${package.repoOwner.toLowerCase()}/${package.repoName.toLowerCase()}`
+    );
+
+    // package.changes = 'anything!';
+    // console.log('should have a fucking property', package);
+
+    const changes = filterOldChanges(package.version, response.data.contents);
+    changes.latestVersion = response.data.contents[0].version;
+
+    res.locals.newList.push({
+      name,
+      version,
+      repoOwner,
+      repoName,
+      github,
+      changes,
+    });
   }
   return next();
 };
@@ -94,7 +108,7 @@ function filterOldChanges(version, changelog) {
     },
   };
   const [myMajor, myMinor, myPatch] = parseVersionNumber(version);
-  console.log(changelog);
+  // console.log(changelog);
 
   for (const update of changelog) {
     const [updateMajor, updateMinor, updatePatch] = parseVersionNumber(
@@ -114,6 +128,8 @@ function filterOldChanges(version, changelog) {
       break;
     }
   }
+  // console.log('new changes', newChanges);
+
   return newChanges;
 }
 

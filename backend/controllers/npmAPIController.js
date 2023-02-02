@@ -1,32 +1,22 @@
 // Syntax = URL/<package>
 const URL = 'https://registry.npmjs.org/';
-const githubRegex = /(git\+)|((https?:\/\/)?github.com\/)|(.git)$/g;
+const githubRegex = /(git\+)|(git:\/\/)|((https?:\/\/)?github.com\/)|(.git)$/g;
 const npmAPIController = {};
 
 npmAPIController.getRepoOwnerAndName = async (req, res, next) => {
   try {
-    const { list } = res.locals.packages;
-    // console.log(list);
+    const { package } = res.locals;
+    // fetching GitHub URL from npm registry
+    const npm = await (await fetch(`${URL}${package.name}`)).json();
 
-    const promises = list.map(async package => {
-      // console.log('package ', package);
+    const urlString = npm.repository.url.replace(githubRegex, '');
+    console.log(urlString);
 
-      // package.npm = await (await fetch(`${URL}${package.name}`)).json();
-      const npm = await (await fetch(`${URL}${package.name}`)).json();
-      const urlString = npm.repository.url.replace(githubRegex, '');
+    const [repoOwner, repoName] = urlString.split('/');
 
-      const [repoOwner, repoName] = urlString.split('/');
-      console.log(repoOwner, repoName);
-
-      package.repoOwner = repoOwner;
-      package.repoName = repoName;
-
-      return package.npm;
-      // console.log(package);
-    });
-    await Promise.all(promises);
-
-    // console.log(list);
+    package.repoOwner = repoOwner;
+    package.repoName = repoName;
+    package.github = npm.repository.url.replace(/^git\+/, '');
 
     return next();
   } catch (error) {
@@ -39,3 +29,26 @@ npmAPIController.getRepoOwnerAndName = async (req, res, next) => {
 };
 
 module.exports = npmAPIController;
+
+// OLD VERSION THAT HANDLES AN ARRAY OF INPUT
+// try {
+//   const { list } = res.locals.packages;
+
+//   const promises = list.map(async package => {
+//     // console.log('package ', package);
+
+//     // package.npm = await (await fetch(`${URL}${package.name}`)).json();
+//     const npm = await (await fetch(`${URL}${package.name}`)).json();
+//     const urlString = npm.repository.url.replace(githubRegex, '');
+
+//     const [repoOwner, repoName] = urlString.split('/');
+//     console.log(repoOwner, repoName);
+
+//     package.repoOwner = repoOwner;
+//     package.repoName = repoName;
+
+//     return package.npm;
+//   });
+//   await Promise.all(promises);
+
+//   return next();

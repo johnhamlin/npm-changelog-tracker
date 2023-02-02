@@ -9,7 +9,7 @@ import PackageList from './containers/PackagesList.jsx';
 import AddPackageContainer from './containers/AddPackageContainer.jsx';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [packageListChanged, setPackageListChanged] = useState(true);
 
   return (
     <Container className="align-content-center">
@@ -17,10 +17,16 @@ function App() {
         <h1 className="display-1 text-center my-4">
           Package Changelog Tracker
         </h1>
-        <Container className="mb-5 row align-content-center">
-          <AddPackageContainer className="mb-5" />
+        <Container className="mb-2 row align-content-center">
+          <AddPackageContainer
+            setPackageListChanged={setPackageListChanged}
+            className="mb-5"
+          />
         </Container>
-        <PackageList />
+        <PackageList
+          packageListChanged={packageListChanged}
+          setPackageListChanged={setPackageListChanged}
+        />
       </Container>
     </Container>
   );
