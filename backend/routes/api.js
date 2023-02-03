@@ -52,4 +52,8 @@ router.delete('/', databaseController.deletePackage, (req, res) => {
   res.status(200).end('deleted');
 });
 
+router.patch('/', databaseController.updatePackage, (req, res) => {
+  res.status(200).end('updated');
+});
+
 module.exports = router;

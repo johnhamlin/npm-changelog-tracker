@@ -14,8 +14,8 @@ function App() {
   return (
     <Container className="align-content-center">
       <Container className="row">
-        <h1 className="display-1 text-center my-4">
-          Package Changelog Tracker
+        <h1 className="display-4 text-center my-4">
+          John's 🔥🔥🔥 Package Changelog Tracker
         </h1>
         <Container className="mb-2 row align-content-center">
           <AddPackageContainer

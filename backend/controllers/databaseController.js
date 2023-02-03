@@ -76,4 +76,29 @@ databaseController.deletePackage = async (req, res, next) => {
   }
 };
 
+databaseController.updatePackage = async (req, res, next) => {
+  try {
+    console.log('got request to update!');
+    console.log(req.body);
+
+    if (!req.body) return next();
+    const { name, oldVersion, newVersion } = req.body;
+    console.log('Finding and updating ', name, oldVersion, newVersion);
+
+    await models.Package.findOneAndUpdate(
+      { name, version: oldVersion },
+      { version: newVersion }
+    );
+    return next();
+  } catch (error) {
+    next({
+      log: `Express caught error in databaseControllers.updatePackage. Err: ${error.message}`,
+      status: 500,
+      message: {
+        err: 'An error occurred in databaseControllers.updatePackage',
+      },
+    });
+  }
+};
+
 module.exports = databaseController;

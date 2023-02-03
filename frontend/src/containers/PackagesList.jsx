@@ -58,6 +58,15 @@ function PackagesList(props) {
           ))}
           <Container className="row align-content-center">
             <Button
+              className="mb-2"
+              onClick={e => {
+                updatePackage(currentPackage.name, currentPackage.version);
+              }}
+            >
+              Update
+            </Button>
+            <Button
+              variant="danger"
               onClick={e => {
                 deletePackage(currentPackage.name, currentPackage.version);
               }}
@@ -88,6 +97,27 @@ function PackagesList(props) {
           console.error(error.message);
         });
     }
+  }
+
+  function updatePackage(name, oldVersion) {
+    const newVersion = prompt('New version?');
+    // console.log(name, oldVersion, newVersion);
+    const body = JSON.stringify({ name, oldVersion, newVersion });
+    console.log(body);
+    fetch('/api', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+    })
+      .then(response => {
+        console.log(response);
+        setPackageListChanged(true);
+      })
+      .catch(error => {
+        console.error(error.message);
+      });
   }
 }
 export default PackagesList;
