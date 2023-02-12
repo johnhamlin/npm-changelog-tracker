@@ -47,8 +47,6 @@ router.post(
 );
 
 router.delete('/', databaseController.deletePackage, (req, res) => {
-  // console.log(res.locals.packages);
-
   res.status(200).end('deleted');
 });
 
