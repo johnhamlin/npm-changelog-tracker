@@ -16,7 +16,8 @@ function PackagesList(props) {
       fetch('/api')
         .then(data => data.json())
         .then(list => {
-          console.log(list);
+          // they don't always render in order despite this
+          list.sort((a, b) => a.name - b.name);
           setPackagesList(list);
           setLoading(false);
         })
@@ -47,7 +48,10 @@ function PackagesList(props) {
 
   function buildAccordionItemFromPackage(currentPackage, index) {
     return (
-      <Accordion.Item key={index} eventKey={index}>
+      <Accordion.Item
+        key={`${index}-${currentPackage.name}-${currentPackage.version}`}
+        eventKey={index}
+      >
         <Accordion.Header>{`${currentPackage.name} @ ${currentPackage.version}`}</Accordion.Header>
         <Accordion.Body>
           {currentPackage.changes.changelog.map(current => (
@@ -59,7 +63,7 @@ function PackagesList(props) {
           <Container className="row align-content-center">
             <Button
               className="mb-2"
-              onClick={e => {
+              onClick={() => {
                 updatePackage(currentPackage.name, currentPackage.version);
               }}
             >
@@ -67,7 +71,7 @@ function PackagesList(props) {
             </Button>
             <Button
               variant="danger"
-              onClick={e => {
+              onClick={() => {
                 deletePackage(currentPackage.name, currentPackage.version);
               }}
             >
