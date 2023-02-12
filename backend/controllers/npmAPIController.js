@@ -1,6 +1,6 @@
 // Syntax = URL/<package>
-const URL = 'https://registry.npmjs.org/';
-const githubRegex = /(git\+)|(git:\/\/)|((https?:\/\/)?github.com\/)|(.git)$/g;
+const URL = "https://registry.npmjs.org/";
+const githubRegex = /(git\+)|(git:\/\/)|((https?:\/\/)?github.com\/)|(.git)/g;
 const npmAPIController = {};
 
 npmAPIController.getRepoOwnerAndName = async (req, res, next) => {
@@ -9,21 +9,21 @@ npmAPIController.getRepoOwnerAndName = async (req, res, next) => {
     // fetching GitHub URL from npm registry
     const npm = await (await fetch(`${URL}${package.name}`)).json();
 
-    const urlString = npm.repository.url.replace(githubRegex, '');
+    const urlString = npm.repository.url.replace(githubRegex, "");
     console.log(urlString);
 
-    const [repoOwner, repoName] = urlString.split('/');
+    const [repoOwner, repoName] = urlString.split("/");
 
     package.repoOwner = repoOwner;
     package.repoName = repoName;
-    package.github = npm.repository.url.replace(/^git\+/, '');
+    package.github = npm.repository.url.replace(/^git\+/, "");
 
     return next();
   } catch (error) {
     next({
       log: `Express caught error in npmAPIController.get. Err: ${error.message}`,
       status: 500,
-      message: { err: 'An error occurred in npmAPIController.get.' },
+      message: { err: "An error occurred in npmAPIController.get." },
     });
   }
 };
