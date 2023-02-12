@@ -10,13 +10,13 @@ changelogAPIController.get = (req, res, next) => {
 
   // get the changelogs for every project
   Promise.all(
-    list.map(package => {
-      const { name, version, repoOwner, repoName, github } = package;
+    list.map((npmPackage) => {
+      const { name, version, repoOwner, repoName, github } = npmPackage;
       return axios
         .get(`${URL}${repoOwner.toLowerCase()}/${repoName.toLowerCase()}`)
-        .then(response => {
+        .then((response) => {
           const changes = filterOldChanges(
-            package.version,
+            npmPackage.version,
             response.data.contents
           );
           changes.latestVersion = response.data.contents[0].version;
@@ -33,7 +33,7 @@ changelogAPIController.get = (req, res, next) => {
     })
   )
     .then(() => next())
-    .catch(error =>
+    .catch((error) =>
       next({
         log: `Express caught error in changelogAPIController.get. Err: ${error.message}`,
         status: 500,
@@ -52,7 +52,6 @@ function filterOldChanges(version, changelog) {
     },
   };
   const [myMajor, myMinor, myPatch] = parseVersionNumber(version);
-  // console.log(changelog);
 
   for (const update of changelog) {
     const [updateMajor, updateMinor, updatePatch] = parseVersionNumber(
@@ -72,7 +71,6 @@ function filterOldChanges(version, changelog) {
       break;
     }
   }
-  // console.log('new changes', newChanges);
 
   return newChanges;
 }
@@ -85,7 +83,7 @@ function filterOldChanges(version, changelog) {
 function parseVersionNumber(versionStr) {
   // default to version 1.0.0
   if (typeof versionStr !== 'string') return [1, 0, 0];
-  return versionStr.split('.').map(numStr => Number(numStr));
+  return versionStr.split('.').map((numStr) => Number(numStr));
 }
 
 console.log(parseVersionNumber('1.10.18'));
