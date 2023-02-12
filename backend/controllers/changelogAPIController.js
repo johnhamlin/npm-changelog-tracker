@@ -34,7 +34,13 @@ changelogAPIController.get = (req, res, next) => {
     })
   )
     .then(() => next())
-    .catch(err => next(err));
+    .catch(error =>
+      next({
+        log: `Express caught error in changelogAPIController.get. Err: ${error.message}`,
+        status: 500,
+        message: { err: 'An error occurred in changelogAPIController.get.' },
+      })
+    );
 };
 
 function filterOldChanges(version, changelog) {
@@ -78,6 +84,8 @@ function filterOldChanges(version, changelog) {
  * @returns An array of numbers.
  */
 function parseVersionNumber(versionStr) {
+  // default to version 1.0.0
+  if (typeof versionStr !== 'string') return [1, 0, 0];
   return versionStr.split('.').map(numStr => Number(numStr));
 }
 
