@@ -1,6 +1,5 @@
 const changelogAPIController = {};
 const axios = require('axios');
-const { patch } = require('../routes/api');
 const URL = 'https://changelogs.md/api/github/';
 
 // slow because promises can't run concurrently, but it works!
