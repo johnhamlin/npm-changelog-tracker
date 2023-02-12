@@ -4,99 +4,38 @@ const { patch } = require('../routes/api');
 const URL = 'https://changelogs.md/api/github/';
 
 // slow because promises can't run concurrently, but it works!
-changelogAPIController.get = async (req, res, next) => {
+changelogAPIController.get = (req, res, next) => {
   console.log('getting changelog');
   const { list } = res.locals;
   res.locals.newList = [];
 
-  for (const package of list) {
-    const { name, version, repoOwner, repoName, github } = package;
+  // get the changelogs for every project
+  Promise.all(
+    list.map(package => {
+      const { name, version, repoOwner, repoName, github } = package;
+      return axios
+        .get(`${URL}${repoOwner.toLowerCase()}/${repoName.toLowerCase()}`)
+        .then(response => {
+          const changes = filterOldChanges(
+            package.version,
+            response.data.contents
+          );
+          changes.latestVersion = response.data.contents[0].version;
 
-    const response = await axios.get(
-      `${URL}${package.repoOwner.toLowerCase()}/${package.repoName.toLowerCase()}`
-    );
-
-    // package.changes = 'anything!';
-    // console.log('should have a fucking property', package);
-
-    const changes = filterOldChanges(package.version, response.data.contents);
-    changes.latestVersion = response.data.contents[0].version;
-
-    res.locals.newList.push({
-      name,
-      version,
-      repoOwner,
-      repoName,
-      github,
-      changes,
-    });
-  }
-  return next();
+          res.locals.newList.push({
+            name,
+            version,
+            repoOwner,
+            repoName,
+            github,
+            changes,
+          });
+        });
+    })
+  )
+    .then(() => next())
+    .catch(err => next(err));
 };
-
-// const promises = list.map(package => {
-//   // console.log(`Repo Owner: ${package.repoOwner}
-//   //   Package Name: ${package.repoName}`);
-
-//   // TODO: This code doesn't handle errors if it doesn't get JSON from the server like it expects
-//   axios
-//     .get(`${URL}${package.repoOwner}/${package.repoName}`)
-//     .then(response => {
-//       // console.log(response.data);
-//       package.data = response.data;
-//       console.log('stuff here');
-
-//       return response;
-//     });
-
-//   // const changelog = JSON.parse(changelogJSON);
-
-//   // console.log(changelog);
-// });
-// console.log(promises);
-
-// Promise.all(promises).then(data => {
-//   console.log(data);
-//   return next();
-// });
-
-// .catch (error => {
-// next({
-//   log: `Express caught error in changelogAPIController.get. Err: ${error.message}`,
-//   status: 500,
-//   message: { err: 'An error occurred in changelogAPIController.get.' },
-// };
-
-//   try {
-//     const { list } = res.locals.packages;
-
-//     await list.map(async package => {
-//       console.log(`Repo Owner: ${package.repoOwner}
-//       Package Name: ${package.repoName}`);
-
-//       // TODO: This code doesn't handle errors if it doesn't get JSON from the server like it expects
-//       const response = axios.get(
-//         `${URL}${package.repoOwner}/${package.repoName}`
-//       );
-//       console.log(response.data);
-
-//       // const changelog = JSON.parse(changelogJSON);
-
-//       package.data = 'anything';
-//       console.log('stuff here');
-//       // console.log(changelog);
-//       return response.data;
-//     });
-
-//     return next();
-//   } catch (error) {
-//     next({
-//       log: `Express caught error in changelogAPIController.get. Err: ${error.message}`,
-//       status: 500,
-//       message: { err: 'An error occurred in changelogAPIController.get.' },
-//     });
-//   }
-// };
 
 function filterOldChanges(version, changelog) {
   const newChanges = {
