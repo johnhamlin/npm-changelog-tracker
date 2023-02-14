@@ -1,5 +1,5 @@
 // imports
-import express, { Express, Request, Response, NextFunction, Errback } from 'express';
+import express, { Express, Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import dotenv from 'dotenv';
 const path = require('path');
 
@@ -34,7 +34,7 @@ app.use((req: Request, res:Response) =>
  * express error handler
  * @see https://expressjs.com/en/guide/error-handling.html#writing-error-handlers
  */
-app.use((err: Errback, req: Request, res: Response, next:NextFunction) => {
+app.use((err: any, req: Request, res: Response, next:NextFunction) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,
